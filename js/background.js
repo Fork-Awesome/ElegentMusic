@@ -32,8 +32,7 @@ function sayHi(info,tab) {
 //                            {code:"$('#g-topbar > div.m-top')"});
 // });
 
-//$("#musicList").append($('<p>hhh</p>'));
-$('<p>hhh</p>').appendTo('#musicList');
+
 chrome.contextMenus.create({
     "title":"查找音乐",
     "onclick":sayHi
