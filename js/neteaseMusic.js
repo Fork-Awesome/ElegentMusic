@@ -10,8 +10,8 @@ var Song = {
     time: "",
     from: "",
     id: "",
-    available: true,
-    substitute: null
+    //available: true,
+    // substitute: null
 }
 var iframe = $('#g_iframe').contents();
 var songs ={};
@@ -28,23 +28,26 @@ trs.each(function() {
         song.time = $($('td', this)[2].children[0]).text();
         song.singer = $($('td', this)[3].children[0].children[0].children[0]).text();
         song.album = $($('td', this)[4].children[0].children[0]).text();
-        song.available = true;
+       // song.available = true;
         song.from = "wangyi_";
+        
+        //console.log(song);
 
         //如果歌曲不可用
         if ($(this).attr('class').search("js-dis") != -1) {
             var flag = true;
-            song.available = false;
+           // song.available = false;
             var xiamiQuerryUrl = "http://www.xiami.com/search?key=" + song.name + " " + song.singer + " " + song.album;
             var subSong = Object.create(Song);
             $.get({
+                async:false,
                 dataType: 'html',
                 url: xiamiQuerryUrl,
                 success: function(data) {
                     // 遍历一首歌的所有搜索结果
                     $(data).find("[checked='checked']").each(function() {
                         var tempSong = Object.create(Song);
-                        tempSong.available = true;
+                        //tempSong.available = true;
                         tempSong.from = "xiami_";
                         tempSong.id = $(this).attr('value');
                         let index = 0;
@@ -64,10 +67,10 @@ trs.each(function() {
                                     if (flag) {
                                         subSong = tempSong;
                                         flag = false;
-                                        song.subSong = subSong;
-                                        //console.log(subSong);
+                                        song = subSong;
+                                        console.log(song);
+                                        
                                     }
-                                    //console.log(tempSong);
                                     break;
                             }
                         });
@@ -76,7 +79,7 @@ trs.each(function() {
                 }
             });
         }
-        // console.log(song);
+        console.log(song);
 
         // //存储歌曲
         // let key=(song.id).toString();
@@ -91,6 +94,10 @@ trs.each(function() {
     
 
 })
+
+function sayhi(){
+    console.log('hi');
+}
 
 console.log(songs);
 chrome.storage.sync.set(songs,function(){

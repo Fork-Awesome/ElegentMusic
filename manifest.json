@@ -17,13 +17,18 @@
         "storage",
         "contextMenus",
         "tabs",
+        "<all_urls>",
         "*://music.163.com/*",
         "*://*.xiami.com/*"
+    ],
+    "web_accessible_resources": [
+        "js/*"
     ],
     "background": {
         "scripts": [
             "js/jquery.js",
             "js/background.js"
-        ]
+        ],
+        "presistent": true
     }
 }

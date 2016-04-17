@@ -2,4 +2,8 @@ body {
     width: 250px;
     height: 500px;
 }
-
+.songFrom{
+    width: 0px;
+    height:0px;
+    visibility: hidden;
+}
