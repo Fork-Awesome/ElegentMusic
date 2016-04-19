@@ -1,25 +1,24 @@
 //清空sync存储
-function clearList(){
-    chrome.storage.sync.clear(function(){
+function clearList() {
+    chrome.storage.sync.clear(function() {
         console.log('sync以清空');
     });
 };
 
-var flag='hello';
 
 var SongBox = React.createClass({displayName: "SongBox",
     getInitialState: function() {
         return { data: [] };
     },
     componentDidMount: function() {
-        var z = this;
-        chrome.storage.sync.get(null, function(songs) {
-            s = []
-            for (song in songs) {  
-                 s.push(songs[song]);
-            }
-            z.setState({ data: s });
+
+        var songBox = this;
+        var songs = [];
+        chrome.extension.sendRequest({ greeting: "getPlayList" }, function(response) {
+            console.log(response.songs);
+            songBox.setState({ data: response.songs });
         });
+
     },
     render: function() {
         return (
@@ -37,7 +36,8 @@ var SongList = React.createClass({displayName: "SongList",
                 React.createElement(SongInfo, {songFrom: song.from, songId: song.id, songName: song.name, songSinger: song.singer})
             );
         });
-        if (songNodes == null || songNodes ==undefined) {
+        console.log(songNodes);
+        if (songNodes == null || songNodes == undefined || songNodes.length == 0) {
             songNodes = "列表空,请打开歌单页面右键添加歌曲";
         }
         return (
@@ -49,30 +49,27 @@ var SongList = React.createClass({displayName: "SongList",
 });
 
 var SongInfo = React.createClass({displayName: "SongInfo",
-    playMusic:function (songFrom,songId) {
-      console.log(songFrom+songId);  
+    playMusic: function(songFrom, songId) {
+        chrome.extension.sendRequest({ greeting: "play", from: songFrom, id: songId }, function(response) {
+            console.log("播放成功");
+        });
     },
     render: function() {
         return (
-            React.createElement("div", {onClick: this.playMusic.bind(this,this.props.songFrom,this.props.songId), id: this.props.songId, className: "SongInfo"}, 
-                React.createElement("h3", {clasName: "SongName"}, 
-                    
+            React.createElement("div", {onClick: this.playMusic.bind(this, this.props.songFrom, this.props.songId), id: this.props.songId, className: "SongInfo"}, 
+                React.createElement("h4", {clasName: "SongName"}, 
                     this.props.songName
                 ), 
-                this.context.flag, 
                 this.props.songSinger
             )
         );
     }
 });
 
+ 
 
 ReactDOM.render(
     React.createElement(SongBox, null),
     document.getElementById('musicList')
 );
 
-function playMusic(id) {
-    id.innerHTML='hello!';
-    console.log("播放音乐");
-}

@@ -14,7 +14,7 @@ var SongBox = React.createClass({displayName: "SongBox",
 
         var songBox = this;
         var songs = [];
-        chrome.extension.sendRequest({ greeting: "hello" }, function(response) {
+        chrome.extension.sendRequest({ greeting: "getPlayList" }, function(response) {
             console.log(response.songs);
             songBox.setState({ data: response.songs });
         });

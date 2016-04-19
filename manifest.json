@@ -14,15 +14,12 @@
         "default_popup": "popup.html"
     },
     "permissions": [
+        "unlimitedStorage",
         "storage",
         "contextMenus",
         "tabs",
-        "<all_urls>",
         "*://music.163.com/*",
         "*://*.xiami.com/*"
-    ],
-    "web_accessible_resources": [
-        "js/*"
     ],
     "background": {
         "scripts": [
@@ -30,5 +27,27 @@
             "js/background.js"
         ],
         "presistent": true
-    }
+    },
+    "web_accessible_resources": [
+        "neteaseAddList.html"
+    ],
+    "content_scripts": [
+        {
+            "matches": [
+                "*://music.163.com/*"
+            ],
+            "js": [
+                "js/jquery.js",
+                "js/neteasePlayer.js"
+            ]
+        },
+        {
+            "matches": [
+                "http://www.xiami.com/play*"
+            ],
+            "js": [
+                "js/xiamiPlayer.js"
+            ]
+        }
+    ]
 }

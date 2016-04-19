@@ -1,3 +1,6 @@
+var isPlayTabOpen = false;
+var tabId = null;
+
 // 查找音乐列表里的音乐
 function findMusicList(info, tab) {
     console.log(info.pageUrl);
@@ -5,16 +8,31 @@ function findMusicList(info, tab) {
 
 
     if (info.pageUrl.search('music.163.com') != -1) {
-        console.log("开始查找163");
+        console.log("backgroud:开始查找163");
         chrome.tabs.executeScript(
             tab.id,
-            { file: "js/jquery.js" }, function() {
+            { file: "js/jquery.js" },
+            function () {
                 console.log("注入jquery.");
             }
         );
+        // chrome.tabs.executeScript(
+        //     tab.id,
+        //     { file: "js/bootstrap.js" },
+        //     function () {
+        //         console.log("注入bootstrap.");
+        //     }
+        // );
+        // chrome.tabs.insertCSS(
+        //     tab.id,
+        //     { file: "css/bootstrap.css" },
+        //     function () {
+        //         console.log("注入bootstrapCSS.");
+        //     }
+        // );
         chrome.tabs.executeScript(
             tab.id,
-            { file: "js/neteaseMusic.js" }, function() {
+            { file: "js/neteaseMusic.js" }, function () {
                 console.log("注入网易列表查找js.");
             }
         );
@@ -22,39 +40,49 @@ function findMusicList(info, tab) {
     }
 }
 
+//添加右键菜单
 chrome.contextMenus.create({
     "title": "查找音乐",
     "onclick": findMusicList
-}, function() {
+}, function () {
     if (chrome.extension.lastError) {
         console.log("Got expected error: " + chrome.extension.lastError.message);
     }
 });
 
 
-
+//监听器
 chrome.extension.onRequest.addListener(
-    function(request, sender, sendResponse) {
+    function (request, sender, sendResponse) {
         s = [];
-        if (request.greeting == "hello") {
-            chrome.storage.sync.get(null, function(songs) {
+        //popup 想要播放列表
+        if (request.greeting == "getPlayList") {
+            chrome.storage.sync.get(null, function (songs) {
                 for (song in songs) {
                     s.push(songs[song]);
                 }
                 console.log(s);
                 sendResponse({ songs: s });
             });
-        } else if (request.greeting == "play") {
+        }
+        //popup 想要播放歌曲
+        else if (request.greeting == "play") {
             console.log(request.from + "!" + request.id);
             playMusic(request.from, request.id);
             sendResponse({ state: "ok" });
         }
-        //  sendResponse({ farewell: "goodbye" });
+        // content script 传递播放的状态 
+        else if (request.greeting == "playing") {
+            if (sender.tab.id != tabId) {
+                sendResponse({ farewell: "stopInterval" });
+            }
+            console.log(request.state);
+            sendResponse({ farewell: "msg from backgroud" });
+        }
     });
 
-var isPlayTabOpen = false;
-var tabId = null;
 
+//播放指定的音乐
 function playMusic(from, id) {
     var url;
     if (from == 'wangyi_') {
@@ -62,6 +90,7 @@ function playMusic(from, id) {
     } else if (from == 'xiami_') {
         url = "http://www.xiami.com/play?ids=/song/playlist/id/" + id;
     }
+    //第一次打开播放窗口 或者 播放窗口被关闭
     if (!isPlayTabOpen) {
         isPlayTabOpen = true;
         chrome.windows.create({
@@ -69,43 +98,20 @@ function playMusic(from, id) {
             width: 1024,
             height: 768,
             url: url,
-        }, function(w) {
+        }, function (w) {
             tabId = w.tabs[0].id;
-        })
+            console.log(tabId);
+        });
     } else {
-        console.log(tabId);
         chrome.tabs.update(tabId, {
             url: url
-        }, function() { })
+        }, function (tab) {
+        });
     }
-
-    chrome.tabs.executeScript(
-        tabId,
-        { file: "js/jquery.js" }, function() {
-            console.log("注入jquery.");
-
-            if (from == 'wangyi_') {
-                chrome.tabs.executeScript(
-                    tabId,
-                    {
-                        // file: "js/neteasePlayer.js",
-                        code: "var script = document.createElement('script');"
-                        + "url =chrome.extension.getURL('/js/neteasePlayer.js');script.src = url;document.getElementsByTagName('head')[0].appendChild(script);"
-                    }, function() {
-                        console.log("注入网易播放器监视器");
-                    }
-                );
-            } else if (from == 'xiami_') {
-                chrome.tabs.executeScript(
-                    tabId,
-                    { file: "js/xiamiPlayer.js" }, function() {
-                        console.log("注入虾米播放器监视器");
-                    }
-                );
-            }
-        }
-    );
-
-
-
 }
+
+chrome.tabs.onRemoved.addListener(function (removeInfo) {
+    if (removeInfo == tabId) {
+        isPlayTabOpen = false;
+    }
+})
