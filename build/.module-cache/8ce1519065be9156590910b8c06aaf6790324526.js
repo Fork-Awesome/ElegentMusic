@@ -148,19 +148,19 @@ var TipsItems = React.createClass({displayName: "TipsItems",
             React.createElement("div", null, 
                 React.createElement("li", {className: "table-view-cell media"}, 
                     React.createElement("a", {className: "navigate-right"}, 
-                        React.createElement("img", {className: "media-object pull-left", src: "images/tip.png"}), 
+                        React.createElement("img", {className: "media-object pull-left", src: "http://placehold.it/42x42"}), 
                         React.createElement("div", {className: "media-body"}, 
-                            "Tip 1", 
-                            React.createElement("p", null, "打开网易歌单或者虾米精选集页面,右键\"查找音乐\",添加歌单")
+                            "Item 1", 
+                            React.createElement("p", null, "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore.Lorem ipsum dolor sit amet.")
                         )
                     )
                 ), 
                 React.createElement("li", {className: "table-view-cell media"}, 
                     React.createElement("a", {className: "navigate-right"}, 
-                        React.createElement("img", {className: "media-object pull-left", src: "images/tip.png"}), 
+                        React.createElement("img", {className: "media-object pull-left", src: "http://placehold.it/42x42"}), 
                         React.createElement("div", {className: "media-body"}, 
-                            "Tip 2", 
-                            React.createElement("p", null, "点击上方,优雅音乐选择要播放的歌单")
+                            "Item 1", 
+                            React.createElement("p", null, "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore.Lorem ipsum dolor sit amet.")
                         )
                     )
                 )

@@ -151,7 +151,7 @@ var TipsItems = React.createClass({displayName: "TipsItems",
                         React.createElement("img", {className: "media-object pull-left", src: "images/tip.png"}), 
                         React.createElement("div", {className: "media-body"}, 
                             "Tip 1", 
-                            React.createElement("p", null, "打开网易歌单或者虾米精选集页面,右键\"查找音乐\",添加歌单")
+                            React.createElement("p", null, "打开网易歌单,右键\"查找音乐\",添加歌单")
                         )
                     )
                 ), 

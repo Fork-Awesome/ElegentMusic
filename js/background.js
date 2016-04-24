@@ -32,26 +32,26 @@ function findMusicList(info, tab) {
             }
         );
 
-    } 
-    // else if (info.pageUrl.search('xiami.com/collect') != -1) {
+    }
+    else if (info.pageUrl.search('xiami.com/collect') != -1) {
 
-    //     tmpListID = getParameterByNameXiami(info.pageUrl);
-    //     console.log("backgroud:开始查找xiami");
-    //     chrome.tabs.executeScript(
-    //         tab.id,
-    //         { file: "js/jquery.js" },
-    //         function () {
-    //             console.log("注入jquery.");
-    //         }
-    //     );
-    //     chrome.tabs.executeScript(
-    //         tab.id,
-    //         { file: "js/xiamiMusic.js" }, function () {
-    //             console.log("注入虾米列表查找js.");
-    //         }
-    //     );
+        tmpListID = getParameterByNameXiami(info.pageUrl);
+        console.log("backgroud:开始查找xiami");
+        chrome.tabs.executeScript(
+            tab.id,
+            { file: "js/jquery.js" },
+            function () {
+                console.log("注入jquery.");
+            }
+        );
+        chrome.tabs.executeScript(
+            tab.id,
+            { file: "js/xiamiMusic.js" }, function () {
+                console.log("注入虾米列表查找js.");
+            }
+        );
 
-    // }
+    }
 }
 
 //添加右键菜单
@@ -340,4 +340,20 @@ function changeState() {
     });
 
 }
+chrome.webRequest.onBeforeSendHeaders.addListener(
+    function (details) {
+        for (var i = 0; i < details.requestHeaders.length; ++i) {
+            if (details.requestHeaders[i].name == 'Origin' || details.requestHeaders[i].name == 'Referer') {
+                details.requestHeaders[i].value = 'http://music.163.com'
+            }else if(details.requestHeaders[i].name == "content-type"){
+                details.requestHeaders[i].value = 'application/x-www-form-urlencoded'
+            }
+        }
+        details.requestHeaders.push({ name: 'cookie',value:'appver=2.0.2;' })
+        console.log(details.requestHeaders)
+        return { requestHeaders: details.requestHeaders };
+    },
+    { urls: ["http://music.163.com/api/search/get/"] },
+    ['blocking', 'requestHeaders']
+);
 

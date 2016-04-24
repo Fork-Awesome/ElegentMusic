@@ -48,8 +48,12 @@ chrome.extension.sendRequest({ greeting: "getListId", listName: listName }, func
 // 遍历网易云音乐列表的每一首歌
 var songs = [];
 var trs = $('tr', iframe);
+//防止全部有版权 不触发存入数据库函数
+$.ajax({
+    url:'http://music.163.com'
+})
 trs.each(function () {
-    if (typeof ($(this).attr('class')) != 'undefined') {
+    if (typeof ($(this).attr('class')) != 'undefined') {    
         var song = Object.create(Song);
         //获取歌曲info
         song.index = Number($('span.num', this).text());
@@ -106,7 +110,7 @@ trs.each(function () {
         } else {  //如果歌曲网易有版权
             song.available = 'wangyi_'
         }
-        //console.log(song);
+        
 
         songs.push(song);
 
@@ -119,6 +123,7 @@ trs.each(function () {
 
 //所有ajax结束再执行
 $(document).ajaxStop(function () {
+    
     console.log(songs);
 
 

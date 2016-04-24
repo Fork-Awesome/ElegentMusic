@@ -17,7 +17,7 @@ var MusicBox = React.createClass({displayName: "MusicBox",
             nowPlaySongIndex: 0,
             nowPlayListName: listName,
         })
-
+        
         $('#musicBox > div > div.backdrop').click();
     },
     handleSelectMusic: function (nowPlaySongIndex) {
@@ -133,38 +133,10 @@ var PlayList = React.createClass({displayName: "PlayList",
         return (
             React.createElement("div", {className: "content"}, 
                 React.createElement("ul", {className: "table-view"}, 
-                    nowPlayListNodes.length > 0 ? nowPlayListNodes : React.createElement(TipsItems, null), 
+                    nowPlayListNodes, 
                     React.createElement("li", null, React.createElement("br", null)), 
                     React.createElement("li", null, React.createElement("br", null))
                 )
-            )
-        )
-    }
-})
-
-var TipsItems = React.createClass({displayName: "TipsItems",
-    render: function () {
-        return (
-            React.createElement("div", null, 
-                React.createElement("li", {className: "table-view-cell media"}, 
-                    React.createElement("a", {className: "navigate-right"}, 
-                        React.createElement("img", {className: "media-object pull-left", src: "images/tip.png"}), 
-                        React.createElement("div", {className: "media-body"}, 
-                            "Tip 1", 
-                            React.createElement("p", null, "打开网易歌单或者虾米精选集页面,右键\"查找音乐\",添加歌单")
-                        )
-                    )
-                ), 
-                React.createElement("li", {className: "table-view-cell media"}, 
-                    React.createElement("a", {className: "navigate-right"}, 
-                        React.createElement("img", {className: "media-object pull-left", src: "images/tip.png"}), 
-                        React.createElement("div", {className: "media-body"}, 
-                            "Tip 2", 
-                            React.createElement("p", null, "点击上方,优雅音乐选择要播放的歌单")
-                        )
-                    )
-                )
-
             )
         )
     }
@@ -185,7 +157,7 @@ var PlayBar = React.createClass({displayName: "PlayBar",
         } else {
             nowPlaySongIndex = 1;
         }
-        nowPlayState = 'playing';
+        nowPlayState='playing';
         this.props.handleSelectMusic(nowPlaySongIndex);
         playMusic();
 

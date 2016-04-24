@@ -43,7 +43,10 @@ chrome.extension.sendRequest({ greeting: "getListId", listName: listName }, func
     }
 });
 
-
+//防止全部有版权 不触发存入数据库函数
+$.ajax({
+    url:'http://www.xiami.com'
+})
 // 遍历虾米音乐列表的每一首歌
 var songs = [];
 
@@ -60,59 +63,80 @@ $('.s_info').each(function () {
         }
     })
     // console.log($('a',this)[0].attr('href'))
-    song.id = Number($($('a', this)[0]).attr('href').split('/song/')[1]);
+    song.xiami_id = Number($($('a', this)[0]).attr('href').split('/song/')[1]);
     song.album = '';
     song.index = Number($('.trackid', this).text());
     //虾米有版权
     if ($('.song_play', this).length == 1) {
         song.available = 'xiami_'
     } else {
-        let neteaseQuerryUrl = 'http://music.163.com/';
-        console.log(neteaseQuerryUrl)
-        fetch(neteaseQuerryUrl, {
-            headers: {
-                "Content-Type": "application/x-www-form-urlencoded",
-                "Referer":"http://music.163.com/search/",
-                "User-Agent":"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_4) AppleWebKit/537.36 (KHTML, like Gecko)"
+        let body = 's=' + song.name + song.singer + '&limit=20&type=1&offset=0';
+        // fetch('http://music.163.com/api/search/get/',{
+        //     method:'POST',
+        //     body:body,
+
+        // }).then(function(res){
+        //     if(res.ok){
+        //         res.json().then(function(data){
+        //             data.result
+        //         })
+        //     }
+        // })
+        $.ajax({
+            url: 'http://music.163.com/api/search/get/',
+            type: 'POST',
+            data: body,
+            success: function (data) {
+                data = $.parseJSON(data);
+                for (i in data.result.songs) {
+                    if (i == 0) {
+                        song.available='wangyi_'
+                        song.name=data.result.songs[i].name;
+                        song.wangyi_id=data.result.songs[i].id;
+                        song.singer=data.result.songs[i].artists[0].name;
+                        song.album=data.result.songs[i].album.name;
+                      
+                        
+                    }
+                }
             }
-        }).then(function (res) {
-            fetch(neteaseQuerryUrl)
+
         })
     }
-    console.log(song)
+    songs.push(song)
 })
 
-// //所有ajax结束再执行
-// $(document).ajaxStop(function () {
-//     console.log(songs);
+//所有ajax结束再执行
+$(document).ajaxStop(function () {
+    console.log(songs);
 
 
-//     if (!$.isEmptyObject(songs)) {
-//         var timestamp = Date.parse(new Date());
-//         var list = { [timestamp]: songList }
-//         //判断sync是否已存在歌单
-//         chrome.storage.sync.get(null, function (lists) {
-//             for (key in lists) {
-//                 if (lists[key] == songList) {
-//                     console.log('歌单已存在')
-//                     chrome.storage.sync.remove(key); //删除 sync 中的list
-//                 }
-//             }
+    if (!$.isEmptyObject(songs)) {
+        var timestamp = Date.parse(new Date());
+        var list = { [timestamp]: songList }
+        //判断sync是否已存在歌单
+        chrome.storage.sync.get(null, function (lists) {
+            for (key in lists) {
+                if (lists[key] == songList) {
+                    console.log('歌单已存在')
+                    chrome.storage.sync.remove(key); //删除 sync 中的list
+                }
+            }
 
-//         });
-//         //要求background将songs存入数据库
-//         chrome.extension.sendRequest({ greeting: "savaSongsInDB", listName: listName, songs: songs }, function (response) {
-//             console.log(response.farewell);
-//             if (response.farewell == 'success') {
-//                 console.log('songs存入数据库');
-//                 chrome.storage.sync.set(list, function () {
-//                     console.log("list存入sync");
-//                 });
-//             }
-//         });
+        });
+        //要求background将songs存入数据库
+        chrome.extension.sendRequest({ greeting: "savaSongsInDB", listName: listName, songs: songs }, function (response) {
+            console.log(response.farewell);
+            if (response.farewell == 'success') {
+                console.log('songs存入数据库');
+                chrome.storage.sync.set(list, function () {
+                    console.log("list存入sync");
+                });
+            }
+        });
 
-//     }
+    }
 
-// });
+});
 
 

@@ -17,7 +17,7 @@ var MusicBox = React.createClass({
             nowPlaySongIndex: 0,
             nowPlayListName: listName,
         })
-        
+
         $('#musicBox > div > div.backdrop').click();
     },
     handleSelectMusic: function (nowPlaySongIndex) {
@@ -129,13 +129,42 @@ var PlayList = React.createClass({
                 <SongItem handleSelectMusic={handleSelectMusic} songName={song.name} singer={song.singer} songIndex={song.index} nowPlaySongIndex={nowPlaySongIndex}/>
             )
         })
+        console.log(nowPlayListNodes)
         return (
             <div className="content">
                 <ul className="table-view">
-                    {nowPlayListNodes}
+                    {nowPlayListNodes.length > 0 ? nowPlayListNodes : <TipsItems/>}
                     <li><br/></li>
                     <li><br/></li>
                 </ul>
+            </div>
+        )
+    }
+})
+
+var TipsItems = React.createClass({
+    render: function () {
+        return (
+            <div>
+                <li className="table-view-cell media">
+                    <a className="navigate-right">
+                        <img className="media-object pull-left" src="images/tip.png" ></img>
+                        <div className="media-body">
+                            Tip 1
+                            <p>打开网易歌单或者虾米精选集页面,右键"查找音乐",添加歌单</p>
+                        </div>
+                    </a>
+                </li>
+                <li className="table-view-cell media">
+                    <a className="navigate-right">
+                        <img className="media-object pull-left" src="images/tip.png"></img>
+                        <div className="media-body">
+                            Tip 2
+                            <p>点击上方,优雅音乐选择要播放的歌单</p>
+                        </div>
+                    </a>
+                </li>
+
             </div>
         )
     }
@@ -156,7 +185,7 @@ var PlayBar = React.createClass({
         } else {
             nowPlaySongIndex = 1;
         }
-        nowPlayState='playing';
+        nowPlayState = 'playing';
         this.props.handleSelectMusic(nowPlaySongIndex);
         playMusic();
 
