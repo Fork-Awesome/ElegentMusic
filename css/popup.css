@@ -1,9 +1,65 @@
-body {
-    width: 250px;
-    height: 500px;
+html {
+    width: 320px;
+    height: 568px;
 }
-.songFrom{
-    width: 0px;
-    height:0px;
-    visibility: hidden;
+
+body{
+    background: #eeeeee;
+}
+
+#playingSongName{
+    margin-top: 5px;
+    width:80%;
+    height: 90%;
+    text-overflow:ellipsis;
+    overflow:hidden; 
+}
+
+#playBarNav{
+    display:-webkit-box;
+    -webkit-box-orient:horizontal;
+    display: -webkit-flex;
+    display: flex;
+    -webkit-align-items: center;
+    align-items: center;
+    -webkit-justify-content: center;
+    justify-content: center;
+    white-space:nowrap;
+    
+}
+#playingSongName > p{
+    margin: 0;
+    text-overflow:ellipsis;
+    overflow:hidden; 
+}
+.songItem{
+    height: 50px;
+     display:-webkit-box;
+    -webkit-box-orient:horizontal;
+    display: -webkit-flex;
+    display: flex;
+    -webkit-align-items: center;
+    align-items: center;
+    -webkit-justify-content: center;
+    justify-content: center;
+    white-space:nowrap;
+}
+.songLi{
+    padding: 0;
+}
+.nameItem{
+    width:98%;
+    padding:5px; 
+}
+.isPlaying{
+    height: 85%;
+    width: 2%;
+    background:#26c081;
+}
+.isnotPlaying{
+    height: 85%;
+    width: 2%;
+}
+.hide{
+    display:none;
 }
